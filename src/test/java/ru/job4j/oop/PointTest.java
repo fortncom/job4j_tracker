@@ -24,10 +24,10 @@ public class PointTest {
     }
 
     @Test
-    public void whenX2Y4Z5ToX1Y2Z8Then3() {
-        int expected = 2;
-        Point point = new Point(2, 4, 5);
-        Point point2 = new Point(1, 2, 8);
+    public void whenX2Y4Z6ToX6Y2Z10Then6() {
+        int expected = 6;
+        Point point = new Point(2, 4, 6);
+        Point point2 = new Point(6, 2, 10);
         double out = point.distance3d(point2);
         Assert.assertEquals(expected, out, 0.01);
     }
