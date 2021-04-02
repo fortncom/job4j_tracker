@@ -1,9 +1,10 @@
-package ru.job4j.oop;
+package ru.job4j.inheritance.profession;
 
 public class Doctor extends Profession {
 
     private int pressure;
     private Patient patient;
+    private Diagnosis diagnosis;
 
     public Doctor(String name, String surname,
                   String education, String birthday, Patient patient) {
@@ -11,8 +12,8 @@ public class Doctor extends Profession {
         this.patient = patient;
     }
 
-    public int getPressure() {
-        return pressure;
+    public Diagnosis heal(Patient pacient) {
+        return new Diagnosis();
     }
 
     public Patient getPatient() {
