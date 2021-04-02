@@ -25,6 +25,11 @@ public class Library {
             System.out.println(book.getName() + " - "
                     + book.getPages() + " стр.");
         }
+        for (Book book : books) {
+            if (book.getName().equals("Clean code")) {
+                System.out.println(book.getName());
+            }
+        }
     }
 
 }
