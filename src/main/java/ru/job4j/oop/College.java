@@ -4,7 +4,7 @@ public class College {
 
     public static void main(String[] args) {
         Freshman freshman = new Freshman();
-        Student studentFromFreshman = (Student) freshman;
-        Object objFromStudent = (Object) studentFromFreshman;
+        Student studentFromFreshman = freshman;
+        Object objFromStudent = studentFromFreshman;
     }
 }
