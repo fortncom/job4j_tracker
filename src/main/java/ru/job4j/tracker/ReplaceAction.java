@@ -22,7 +22,7 @@ public class ReplaceAction implements UserAction {
         if (tracker.replace(id, item)) {
             out.println("Заявка изменена успешно.");
         } else {
-            out.println("Ошибка замены заявки.");
+            out.println("Заявка с id = " + id + " отсутствует.");
         }
         return true;
     }
