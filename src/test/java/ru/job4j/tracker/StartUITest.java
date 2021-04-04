@@ -20,7 +20,7 @@ public class StartUITest {
                 new CreateAction(new StubOutput()),
                 new ExitProgramAction(out)
         };
-        new StartUI().init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, actions);
         assertThat(tracker.findAll()[0].getName(), is("Fix PC"));
     }
 
@@ -37,7 +37,7 @@ public class StartUITest {
                 new ReplaceAction(out),
                 new ExitProgramAction(out)
         };
-        new StartUI().init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, actions);
         assertThat(tracker.findById(item.getId()).getName(), is(replacedName));
     }
 
@@ -53,8 +53,25 @@ public class StartUITest {
                 new DeleteAction(out),
                 new ExitProgramAction(out)
         };
-        new StartUI().init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, actions);
         assertThat(tracker.findById(item.getId()), Matchers.is(nullValue()));
+    }
+
+    @Test
+    public void whenExit() {
+        Output out = new StubOutput();
+        Input in = new StubInput(
+                new String[] {"0"}
+        );
+        Tracker tracker = new Tracker();
+        UserAction[] actions = {
+                new ExitProgramAction(out)
+        };
+        new StartUI(out).init(in, tracker, actions);
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator()
+                       + "0. Exit Program" + System.lineSeparator()
+        ));
     }
 
 }
