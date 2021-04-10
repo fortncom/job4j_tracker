@@ -21,8 +21,7 @@ public class Tracker {
     public List<Item> findByName(String key) {
         int quantity = 0;
         List<Item> rsl = new ArrayList<>();
-        for (int index = 0; index < items.size(); index++) {
-            Item item = items.get(index);
+        for (Item item : items) {
             if (item.getName().equals(key)) {
                 rsl.add(item);
             }
@@ -31,7 +30,7 @@ public class Tracker {
     }
 
     public List<Item> findAll() {
-        return items;
+        return List.copyOf(items);
     }
 
     public boolean replace(int id, Item item) {
