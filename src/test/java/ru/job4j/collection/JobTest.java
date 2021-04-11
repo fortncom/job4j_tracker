@@ -90,6 +90,6 @@ public class JobTest {
                 new Job("Impl task", 0),
                 new Job("Impl task", 1)
         );
-        assertThat(rsl, lessThan(0));
+        assertThat(rsl, greaterThan(0));
     }
 }
