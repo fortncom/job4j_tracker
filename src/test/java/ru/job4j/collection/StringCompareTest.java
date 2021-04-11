@@ -33,9 +33,9 @@ public class StringCompareTest {
     public void whenLeftGreaterThanRightResultShouldBePositive() {
         StringCompare compare = new StringCompare();
         int rst = compare.compare(
-                "Ivanova",
-                "Petrov"
-        );
+                "Petrov",
+                "Ivanova"
+                );
         assertThat(rst, greaterThan(0));
     }
 
@@ -53,7 +53,7 @@ public class StringCompareTest {
     public void secondCharOfLeftLessThanRightShouldBeNegative() {
         StringCompare compare = new StringCompare();
         int rst = compare.compare(
-                "Patrov",
+                "Patrova",
                 "Petrov"
         );
         assertThat(rst, lessThan(0));
