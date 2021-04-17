@@ -15,16 +15,16 @@ public class PhoneDictionary {
     /**
      * Вернуть список всех пользователей, который содержат key в любых полях.
      * @param key Ключ поиска.
-     * @return Список подощедщих пользователей.
+     * @return Список подошедших пользователей.
      */
     public ArrayList<Person> find(String key) {
-        Predicate<Person> combine = person -> person.getName().contains(key)
-                 || person.getSurname().contains(key)
-                 || person.getPhone().contains(key)
-                 || person.getAddress().contains(key);
+        Predicate<Person> isName = person -> person.getName().contains(key);
+        Predicate<Person> isSurname = person -> person.getSurname().contains(key);
+        Predicate<Person> isPhone = person -> person.getPhone().contains(key);
+        Predicate<Person> isAddress = person -> person.getAddress().contains(key);
+        Predicate<Person> combine = isName.or(isSurname).or(isPhone).or(isAddress);
         ArrayList<Person> result = new ArrayList<>();
         for (Person person : persons) {
-
             if (combine.test(person)) {
                 result.add(person);
             }
