@@ -14,7 +14,7 @@ public class FI {
         Comparator<Attachment> comparator = new Comparator<Attachment>() {
             @Override
             public int compare(Attachment left, Attachment right) {
-                return left.getSize() - right.getSize();
+                return Integer.compare(left.getSize(), right.getSize());
             }
         };
         Arrays.sort(atts, comparator);
