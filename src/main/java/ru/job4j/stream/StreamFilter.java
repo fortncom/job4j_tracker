@@ -14,7 +14,8 @@ public class StreamFilter {
                 35,
                 -87
         ));
-        List<Integer> rsl = numbers.stream().filter(integer -> integer > 0)
+        List<Integer> rsl = numbers.stream()
+                .filter(integer -> integer > 0)
                 .collect(Collectors.toList());
         System.out.println(rsl);
     }
