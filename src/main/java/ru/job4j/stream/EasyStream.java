@@ -1,0 +1,41 @@
+package ru.job4j.stream;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+public class EasyStream {
+
+    private List<Integer> list;
+
+    private EasyStream() {
+    }
+
+    private EasyStream(EasyStream easyStream) {
+        this.list = new ArrayList<>(easyStream.list);
+    }
+
+    public static EasyStream of(List<Integer> source) {
+       EasyStream easyStream = new EasyStream();
+       easyStream.list = new ArrayList<>(source);
+       return easyStream;
+    }
+
+    public EasyStream map(Function<Integer, Integer> fun) {
+        for (int i = 0; i < list.size(); i++) {
+            list.set(i, fun.apply(list.get(i)));
+        }
+        return new EasyStream(this);
+    }
+
+    public EasyStream filter(Predicate<Integer> fun) {
+        list.removeIf(integer -> !fun.test(integer));
+        return new EasyStream(this);
+    }
+
+    public List<Integer> collect() {
+        return list;
+    }
+
+}
