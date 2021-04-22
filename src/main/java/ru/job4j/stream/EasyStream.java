@@ -12,8 +12,8 @@ public class EasyStream {
     private EasyStream() {
     }
 
-    private EasyStream(EasyStream easyStream) {
-        this.list = new ArrayList<>(easyStream.list);
+    private EasyStream(List<Integer> list) {
+        this.list = new ArrayList<>(list);
     }
 
     public static EasyStream of(List<Integer> source) {
@@ -26,12 +26,12 @@ public class EasyStream {
         for (int i = 0; i < list.size(); i++) {
             list.set(i, fun.apply(list.get(i)));
         }
-        return new EasyStream(this);
+        return new EasyStream(list);
     }
 
     public EasyStream filter(Predicate<Integer> fun) {
         list.removeIf(integer -> !fun.test(integer));
-        return new EasyStream(this);
+        return new EasyStream(list);
     }
 
     public List<Integer> collect() {
