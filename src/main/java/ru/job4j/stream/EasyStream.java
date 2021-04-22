@@ -9,17 +9,12 @@ public class EasyStream {
 
     private List<Integer> list;
 
-    private EasyStream() {
-    }
-
     private EasyStream(List<Integer> list) {
         this.list = new ArrayList<>(list);
     }
 
     public static EasyStream of(List<Integer> source) {
-       EasyStream easyStream = new EasyStream();
-       easyStream.list = new ArrayList<>(source);
-       return easyStream;
+        return new EasyStream(source);
     }
 
     public EasyStream map(Function<Integer, Integer> fun) {
