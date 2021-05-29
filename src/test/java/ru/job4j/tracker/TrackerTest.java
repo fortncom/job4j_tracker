@@ -8,21 +8,22 @@ import static org.junit.Assert.assertThat;
 public class TrackerTest {
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
-        Tracker tracker = new Tracker();
+        Store tracker = new SqlTracker();
+        tracker.init();
         Item item = new Item();
         item.setName("test1");
-        tracker.add(item);
         Item result = tracker.findById(item.getId());
         assertThat(result.getName(), is(item.getName()));
     }
 
     @Test
     public void whenReplace() {
-        Tracker tracker = new Tracker();
+        Store tracker = new SqlTracker();
+        tracker.init();
         Item bug = new Item();
         bug.setName("Bug");
-        tracker.add(bug);
-        int id = bug.getId();
+        Item addedItem = tracker.add(bug);
+        int id = addedItem.getId();
         Item bugWithDesc = new Item();
         bugWithDesc.setName("Bug with description");
         tracker.replace(id, bugWithDesc);
@@ -31,11 +32,12 @@ public class TrackerTest {
 
     @Test
     public void whenDelete() {
-        Tracker tracker = new Tracker();
+        Store tracker = new SqlTracker();
+        tracker.init();
         Item bug = new Item();
         bug.setName("Bug");
-        tracker.add(bug);
-        int id = bug.getId();
+        Item addedItem = tracker.add(bug);
+        int id = addedItem.getId();
         tracker.delete(id);
         assertThat(tracker.findById(id), is(nullValue()));
     }
