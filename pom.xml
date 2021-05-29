@@ -15,6 +15,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <properties>
+                <psql.url>jdbc:postgresql://127.0.0.1:5433/tracker</psql.url>
+                <psql.login>postgres</psql.login>
+                <psql.password>12345</psql.password>
+                <psql.driver>org.postgresql.Driver</psql.driver>
+            </properties>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <psql.url>jdbc:postgresql://127.0.0.1:5433/tracker</psql.url>
+                <psql.login>postgres</psql.login>
+                <psql.password>12345</psql.password>
+                <psql.driver>org.postgresql.Driver</psql.driver>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -37,6 +58,26 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <changeLogFile>${basedir}/src/main/java/ru/job4j/tracker/db/master.xml</changeLogFile>
+                    <url>${psql.url}</url>
+                    <driver>${psql.driver}</driver>
+                    <username>${psql.login}</username>
+                    <password>${psql.password}</password>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

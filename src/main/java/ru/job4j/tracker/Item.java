@@ -1,6 +1,6 @@
 package ru.job4j.tracker;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Item {
     private int id;
     private String name;
-    private LocalDateTime created = LocalDateTime.now();
+    private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     public Item() {
     }
@@ -22,8 +22,18 @@ public class Item {
         this.name = name;
     }
 
-    public LocalDateTime getCreated() {
+    public Item(int id, String name, Timestamp created) {
+        this.id = id;
+        this.name = name;
+        this.created = created;
+    }
+
+    public Timestamp getCreated() {
         return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
     public int getId() {

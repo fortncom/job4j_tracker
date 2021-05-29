@@ -10,8 +10,8 @@ public class TrackerTest {
     public void whenAddNewItemThenTrackerHasSameItem() {
         Store tracker = new SqlTracker();
         tracker.init();
-        Item item = new Item();
-        item.setName("test1");
+        Item item = new Item("test1");
+        tracker.add(item);
         Item result = tracker.findById(item.getId());
         assertThat(result.getName(), is(item.getName()));
     }

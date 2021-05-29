@@ -9,6 +9,13 @@ import java.util.Properties;
 public class SqlTracker implements Store {
     private Connection cn;
 
+    public SqlTracker() {
+    }
+
+    public SqlTracker(Connection cn) {
+        this.cn = cn;
+    }
+
     public void init() {
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream(
                 "app.properties")) {
@@ -28,20 +35,22 @@ public class SqlTracker implements Store {
     @Override
     public Item add(Item item) {
         try (PreparedStatement statement = cn.prepareStatement(
-                "insert into items(name) values (?)",
+                "insert into items(name, created) values (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
             statement.setString(1, item.getName());
+            statement.setTimestamp(2, item.getCreated());
             statement.execute();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     item.setId(generatedKeys.getInt(1));
+                    return item;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return item;
+        throw new IllegalStateException("Could not create new user");
     }
 
     @Override
@@ -49,9 +58,10 @@ public class SqlTracker implements Store {
         boolean result = false;
         try (PreparedStatement statement =
                      cn.prepareStatement(
-                             "update items set name = ? where id = ?")) {
+                             "update items set name = ?,  created = ? where id = ?")) {
             statement.setString(1, item.getName());
-            statement.setInt(2, id);
+            statement.setTimestamp(2, item.getCreated());
+            statement.setInt(3, id);
             result = statement.executeUpdate() > 0;
             return result;
         } catch (Exception e) {
@@ -83,7 +93,8 @@ public class SqlTracker implements Store {
                 while (resultSet.next()) {
                     items.add(new Item(
                             resultSet.getInt("id"),
-                            resultSet.getString("name")
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("created")
                     ));
                 }
             }
@@ -104,7 +115,8 @@ public class SqlTracker implements Store {
                 while (resultSet.next()) {
                     items.add(new Item(
                             resultSet.getInt("id"),
-                            resultSet.getString("name")
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("created")
                     ));
                 }
             }
@@ -125,7 +137,8 @@ public class SqlTracker implements Store {
                 if (resultSet.next()) {
                     item = new Item(
                             resultSet.getInt("id"),
-                            resultSet.getString("name")
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("created")
                     );
                 }
             }
