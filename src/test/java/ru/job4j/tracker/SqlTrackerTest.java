@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SqlTrackerTest {
 
@@ -53,6 +53,24 @@ public class SqlTrackerTest {
             Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
             boolean rsl = tracker.delete(item.getId());
             assertTrue(rsl);
+        }
+    }
+
+    @Test
+    public void findByIdItem() throws Exception {
+        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+            Item rsl = tracker.findById(item.getId());
+            assertEquals(rsl, item);
+        }
+    }
+
+    @Test
+    public void findByNameItem() throws Exception {
+        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+            List<Item> rsl = tracker.findByName(item.getName());
+            assertTrue(rsl.containsAll(List.of(item)));
         }
     }
 
