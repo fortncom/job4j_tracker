@@ -23,8 +23,8 @@
             </activation>
             <properties>
                 <psql.url>jdbc:postgresql://localhost:5433/tracker</psql.url>
-                <psql.login>postgres</psql.login>
-                <psql.password></psql.password>
+                <psql.login>tester</psql.login>
+                <psql.password>12345</psql.password>
                 <psql.driver>org.postgresql.Driver</psql.driver>
             </properties>
         </profile>
