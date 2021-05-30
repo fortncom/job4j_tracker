@@ -6,9 +6,10 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class TrackerTest {
+
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
-        Store tracker = new SqlTracker();
+        Store tracker = new MemTracker();
         tracker.init();
         Item item = new Item("test1");
         tracker.add(item);
@@ -18,12 +19,12 @@ public class TrackerTest {
 
     @Test
     public void whenReplace() {
-        Store tracker = new SqlTracker();
+        Store tracker = new MemTracker();
         tracker.init();
         Item bug = new Item();
         bug.setName("Bug");
-        Item addedItem = tracker.add(bug);
-        int id = addedItem.getId();
+        tracker.add(bug);
+        int id = bug.getId();
         Item bugWithDesc = new Item();
         bugWithDesc.setName("Bug with description");
         tracker.replace(id, bugWithDesc);
@@ -32,12 +33,12 @@ public class TrackerTest {
 
     @Test
     public void whenDelete() {
-        Store tracker = new SqlTracker();
+        Store tracker = new MemTracker();
         tracker.init();
         Item bug = new Item();
         bug.setName("Bug");
-        Item addedItem = tracker.add(bug);
-        int id = addedItem.getId();
+        tracker.add(bug);
+        int id = bug.getId();
         tracker.delete(id);
         assertThat(tracker.findById(id), is(nullValue()));
     }
