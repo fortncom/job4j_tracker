@@ -21,7 +21,7 @@ public class SqlTrackerTest {
             config.load(in);
             Class.forName(config.getProperty("psql.driver"));
             return DriverManager.getConnection(
-                    config.getProperty("psql.url"),
+                    config.getProperty("psql.url.test"),
                     config.getProperty("psql.login"),
                     config.getProperty("psql.password"));
         } catch (Exception e) {
