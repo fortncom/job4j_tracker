@@ -15,16 +15,16 @@ public class HibernateRun {
                 .configure().build();
         try {
             SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-            Item item = create(new Item("Learn Hibernate", "config", false, 15), sf);
+            ConfigItem item = create(new ConfigItem("Learn Hibernate", "config", false, 15), sf);
             System.out.println(item);
             item.setName("Learn Hibernate 5.");
             update(item, sf);
             System.out.println(item);
-            Item rsl = findById(item.getId(), sf);
+            ConfigItem rsl = findById(item.getId(), sf);
             System.out.println(rsl);
 //            delete(rsl.getId(), sf);
-            List<Item> list = findAll(sf);
-            for (Item it : list) {
+            List<ConfigItem> list = findAll(sf);
+            for (ConfigItem it : list) {
                 System.out.println(it);
             }
         }  catch (Exception e) {
@@ -34,7 +34,7 @@ public class HibernateRun {
         }
     }
 
-    public static Item create(Item item, SessionFactory sf) {
+    public static ConfigItem create(ConfigItem item, SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
         session.save(item);
@@ -43,7 +43,7 @@ public class HibernateRun {
         return item;
     }
 
-    public static void update(Item item, SessionFactory sf) {
+    public static void update(ConfigItem item, SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
         session.update(item);
@@ -54,26 +54,26 @@ public class HibernateRun {
     public static void delete(Integer id, SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
-        Item item = new Item(null);
+        ConfigItem item = new ConfigItem(null);
         item.setId(id);
         session.delete(item);
         session.getTransaction().commit();
         session.close();
     }
 
-    public static List<Item> findAll(SessionFactory sf) {
+    public static List<ConfigItem> findAll(SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
-        List result = session.createQuery("from ru.job4j.config.Item").list();
+        List result = session.createQuery("from ru.job4j.config.ConfigItem").list();
         session.getTransaction().commit();
         session.close();
         return result;
     }
 
-    public static Item findById(Integer id, SessionFactory sf) {
+    public static ConfigItem findById(Integer id, SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
-        Item result = session.get(Item.class, id);
+        ConfigItem result = session.get(ConfigItem.class, id);
         session.getTransaction().commit();
         session.close();
         return result;

@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "configitem")
+public class ConfigItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,26 +16,26 @@ public class Item {
     private Integer timeToDeadline;
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
-    public Item() {
+    public ConfigItem() {
     }
 
-    public Item(String name) {
+    public ConfigItem(String name) {
         this.name = name;
     }
 
-    public Item(String name, String description) {
+    public ConfigItem(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Item(String name, String description, boolean status) {
+    public ConfigItem(String name, String description, boolean status) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.created = created;
     }
 
-    public Item(String name, String description, boolean status, int timeToDeadline) {
+    public ConfigItem(String name, String description, boolean status, int timeToDeadline) {
         this.name = name;
         this.description = description;
         this.status = status;

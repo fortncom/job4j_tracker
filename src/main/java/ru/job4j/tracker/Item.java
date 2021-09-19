@@ -1,11 +1,17 @@
 package ru.job4j.tracker;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "items")
 public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private Timestamp created = new Timestamp(System.currentTimeMillis());
