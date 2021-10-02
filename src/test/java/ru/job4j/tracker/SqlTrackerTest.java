@@ -16,7 +16,7 @@ public class SqlTrackerTest {
 
     public Connection init() {
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream(
-                "app.properties")) {
+                "test.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("psql.driver"));
