@@ -20,10 +20,16 @@ public class SqlTrackerTest {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("psql.driver"));
-            return DriverManager.getConnection(
+            Connection connection = DriverManager.getConnection(
                     config.getProperty("psql.url"),
                     config.getProperty("psql.login"),
                     config.getProperty("psql.password"));
+            connection.prepareStatement("create table if not exists items( "
+                    + "id serial primary key, "
+                    + "name text, "
+                    + "created timestamp);"
+            ).executeUpdate();
+            return connection;
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

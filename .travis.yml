@@ -4,6 +4,7 @@ jdk:
   - openjdk14
 
 services:
+  - memcached
   - postgresql
 
 before_install:

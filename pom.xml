@@ -31,10 +31,10 @@
         <profile>
             <id>test</id>
             <properties>
-                <psql.url>jdbc:postgresql://127.0.0.1:5433/tracker</psql.url>
-                <psql.login>postgres</psql.login>
-                <psql.password>12345</psql.password>
-                <psql.driver>org.postgresql.Driver</psql.driver>
+                <psql.url>jdbc:h2:mem:testdb;MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;</psql.url>
+                <psql.login></psql.login>
+                <psql.password></psql.password>
+                <psql.driver>org.h2.Driver</psql.driver>
             </properties>
         </profile>
         <profile>
@@ -53,6 +53,12 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

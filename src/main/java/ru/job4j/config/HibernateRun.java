@@ -22,7 +22,7 @@ public class HibernateRun {
             System.out.println(item);
             ConfigItem rsl = findById(item.getId(), sf);
             System.out.println(rsl);
-//            delete(rsl.getId(), sf);
+            delete(rsl.getId(), sf);
             List<ConfigItem> list = findAll(sf);
             for (ConfigItem it : list) {
                 System.out.println(it);
