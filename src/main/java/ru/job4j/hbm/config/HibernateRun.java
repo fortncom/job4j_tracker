@@ -1,4 +1,4 @@
-package ru.job4j.config;
+package ru.job4j.hbm.config;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -64,7 +64,7 @@ public class HibernateRun {
     public static List<ConfigItem> findAll(SessionFactory sf) {
         Session session = sf.openSession();
         session.beginTransaction();
-        List result = session.createQuery("from ru.job4j.config.ConfigItem").list();
+        List result = session.createQuery("from ru.job4j.hbm.config.ConfigItem").list();
         session.getTransaction().commit();
         session.close();
         return result;

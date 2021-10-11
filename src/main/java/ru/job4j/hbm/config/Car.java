@@ -1,4 +1,4 @@
-package ru.job4j.config;
+package ru.job4j.hbm.config;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

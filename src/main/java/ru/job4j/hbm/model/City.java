@@ -1,21 +1,24 @@
-package ru.job4j.manytomany;
+package ru.job4j.hbm.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-@Table(name = "t_books")
-public class Book {
+public class City {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
 
-    public static Book of(String name) {
-        Book book = new Book();
-        book.name = name;
-        return book;
+    public City() { }
+
+    public City(String name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -42,12 +45,12 @@ public class Book {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Book book = (Book) o;
-        return id == book.id;
+        City city = (City) o;
+        return id == city.id && Objects.equals(name, city.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name);
     }
 }

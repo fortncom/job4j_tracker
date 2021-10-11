@@ -1,83 +1,74 @@
 package ru.job4j.tracker;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SqlTrackerTest {
 
-    public Connection init() {
-        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream(
-                "test.properties")) {
-            Properties config = new Properties();
-            config.load(in);
-            Class.forName(config.getProperty("psql.driver"));
-            Connection connection = DriverManager.getConnection(
-                    config.getProperty("psql.url"),
-                    config.getProperty("psql.login"),
-                    config.getProperty("psql.password"));
-            connection.prepareStatement("create table if not exists items( "
-                    + "id serial primary key, "
-                    + "name text, "
-                    + "created timestamp);"
-            ).executeUpdate();
-            return connection;
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+    private final BasicDataSource pool = new BasicDataSource();
+    private SqlTracker store;
+
+    @Before
+    public void setUp() throws SQLException {
+        pool.setDriverClassName("org.h2.Driver");
+        pool.setUrl("jdbc:h2:mem:testdb;MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;");
+        pool.setUsername("");
+        pool.setPassword("");
+        pool.setMaxTotal(2);
+        pool.getConnection().prepareStatement("create table if not exists items( "
+                + "id serial primary key, "
+                + "name text, "
+                + "created timestamp);").executeUpdate();
+
+        store = new SqlTracker(pool);
+    }
+
+    @After
+    public void delete() throws SQLException {
+        pool.getConnection().prepareStatement("drop table items;").executeUpdate();
     }
 
     @Test
     public void createItem() throws Exception {
-        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
-            tracker.add(new Item("name"));
-            assertThat(tracker.findByName("name").size(), is(1));
-        }
+        store.add(new Item("name"));
+        assertThat(store.findByName("name").size(), is(1));
     }
 
     @Test
     public void replaceItem() throws Exception {
-        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
-            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
-            Item nItem = new Item(item.getId(), "name2", new Timestamp(System.currentTimeMillis()));
-            tracker.replace(item.getId(), nItem);
-            assertThat(tracker.findById(item.getId()), is(nItem));
-        }
+        Item item = store.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+        Item nItem = new Item(item.getId(), "name2", new Timestamp(System.currentTimeMillis()));
+        store.replace(item.getId(), nItem);
+        assertThat(store.findById(item.getId()), is(nItem));
     }
 
     @Test
     public void deleteItem() throws Exception {
-        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
-            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
-            boolean rsl = tracker.delete(item.getId());
-            assertTrue(rsl);
-        }
+        Item item = store.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+        boolean rsl = store.delete(item.getId());
+        assertTrue(rsl);
     }
 
     @Test
     public void findByIdItem() throws Exception {
-        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
-            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
-            Item rsl = tracker.findById(item.getId());
-            assertEquals(rsl, item);
-        }
+        Item item = store.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+        Item rsl = store.findById(item.getId());
+        assertEquals(rsl, item);
     }
 
     @Test
     public void findByNameItem() throws Exception {
-        try (SqlTracker tracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
-            Item item = tracker.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
-            List<Item> rsl = tracker.findByName(item.getName());
-            assertTrue(rsl.containsAll(List.of(item)));
-        }
+        Item item = store.add(new Item(1, "name", new Timestamp(System.currentTimeMillis())));
+        List<Item> rsl = store.findByName(item.getName());
+        assertTrue(rsl.containsAll(List.of(item)));
     }
-
 }

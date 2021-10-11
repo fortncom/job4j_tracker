@@ -1,5 +1,9 @@
 package ru.job4j.tracker;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,34 +11,39 @@ import java.util.List;
 import java.util.Properties;
 
 public class SqlTracker implements Store {
-    private Connection cn;
+    private static final Logger LOG = LoggerFactory.getLogger(SqlTracker.class.getName());
+    private final BasicDataSource pool;
 
     public SqlTracker() {
+        pool = new BasicDataSource();
     }
 
-    public SqlTracker(Connection cn) {
-        this.cn = cn;
+    public SqlTracker(BasicDataSource pool) {
+        this.pool = pool;
     }
 
     public void init() {
+        Properties config = new Properties();
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream(
                 "app.properties")) {
-            Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("psql.driver"));
-            cn = DriverManager.getConnection(
-                    config.getProperty("psql.url"),
-                    config.getProperty("psql.login"),
-                    config.getProperty("psql.password")
-            );
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+        pool.setDriverClassName(config.getProperty("psql.driver"));
+        pool.setUrl(config.getProperty("psql.url"));
+        pool.setUsername(config.getProperty("psql.login"));
+        pool.setPassword(config.getProperty("psql.password"));
+        pool.setMinIdle(5);
+        pool.setMaxIdle(10);
+        pool.setMaxOpenPreparedStatements(100);
     }
 
     @Override
     public Item add(Item item) {
-        try (PreparedStatement statement = cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                 "insert into items(name, created) values (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
@@ -48,7 +57,7 @@ public class SqlTracker implements Store {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         throw new IllegalStateException("Could not create new user");
     }
@@ -56,8 +65,8 @@ public class SqlTracker implements Store {
     @Override
     public boolean replace(int id, Item item) {
         boolean result = false;
-        try (PreparedStatement statement =
-                     cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                              "update items set name = ?,  created = ? where id = ?")) {
             statement.setString(1, item.getName());
             statement.setTimestamp(2, item.getCreated());
@@ -65,7 +74,7 @@ public class SqlTracker implements Store {
             result = statement.executeUpdate() > 0;
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return result;
     }
@@ -73,21 +82,21 @@ public class SqlTracker implements Store {
     @Override
     public boolean delete(int id) {
         boolean result = false;
-        try (PreparedStatement statement =
-                     cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                              "delete from items where id = ?")) {
             statement.setInt(1, id);
             result = statement.executeUpdate() > 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return result;    }
 
     @Override
     public List<Item> findAll() {
         List<Item> items = new ArrayList<>();
-        try (PreparedStatement statement =
-                     cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                              "select * from items")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -99,7 +108,7 @@ public class SqlTracker implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return items;
     }
@@ -107,8 +116,8 @@ public class SqlTracker implements Store {
     @Override
     public List<Item> findByName(String key) {
         List<Item> items = new ArrayList<>();
-        try (PreparedStatement statement =
-                     cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                              "select * from items where name = ?")) {
             statement.setString(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -121,7 +130,7 @@ public class SqlTracker implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return items;
     }
@@ -129,8 +138,8 @@ public class SqlTracker implements Store {
     @Override
     public Item findById(int id) {
         Item item = null;
-        try (PreparedStatement statement =
-                     cn.prepareStatement(
+        try (Connection cn = pool.getConnection();
+             PreparedStatement statement =  cn.prepareStatement(
                              "select * from items where id = ?")) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -143,16 +152,14 @@ public class SqlTracker implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return item;
     }
 
     @Override
     public void close() throws Exception {
-        if (cn != null) {
-            cn.close();
-        }
+        pool.close();
     }
 
 }
