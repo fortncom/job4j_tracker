@@ -34,8 +34,11 @@ public class MemTracker implements Store {
         return rsl;
     }
 
-    public List<Item> findAll() {
-        return List.copyOf(items);
+    @Override
+    public void findAll(Observe<Item> observe) {
+        for (Item item : items) {
+            observe.receive(item);
+        }
     }
 
     public boolean replace(int id, Item item) {

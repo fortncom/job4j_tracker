@@ -2,6 +2,9 @@ package ru.job4j.tracker;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +31,8 @@ public class ReplaceActionTest {
 
         String ln = System.lineSeparator();
         assertThat(out.toString(), is("=== Edit item ====" + ln + "Заявка изменена успешно." + ln));
-        assertThat(tracker.findAll().get(0).getName(), is(replacedName));
+        List<Item> items = new ArrayList<>();
+        tracker.findAll(items::add);
+        assertThat(items.get(0).getName(), is(replacedName));
     }
 }

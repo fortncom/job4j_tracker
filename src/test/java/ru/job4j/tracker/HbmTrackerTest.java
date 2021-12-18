@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +45,9 @@ public class HbmTrackerTest {
     public void whenFindAll() {
         Item one = tracker.add(new Item("test 1"));
         Item two = tracker.add(new Item("test 2"));
-        assertThat(tracker.findAll(), is(List.of(one, two)));
+        List<Item> items = new ArrayList<>();
+        tracker.findAll(items::add);
+        assertThat(items, is(List.of(one, two)));
     }
 
     @Test

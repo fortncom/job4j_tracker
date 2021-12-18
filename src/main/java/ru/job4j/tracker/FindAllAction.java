@@ -1,6 +1,6 @@
 package ru.job4j.tracker;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FindAllAction implements UserAction {
 
@@ -18,12 +18,12 @@ public class FindAllAction implements UserAction {
     @Override
     public boolean execute(Input input, Store tracker) {
         out.println("=== Show all items ====");
-        List<Item> items = tracker.findAll();
-        if (items.size() > 0) {
-            for (Item item : items) {
-                out.println(item);
-            }
-        } else {
+        AtomicInteger count = new AtomicInteger(0);
+        tracker.findAll(item -> {
+            out.println(item);
+            count.getAndAdd(1);
+        });
+        if (count.get() == 0) {
             out.println("Хранилище еще не содержит заявок");
         }
         return true;

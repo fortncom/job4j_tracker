@@ -25,7 +25,9 @@ public class StartUITest {
                 new CreateAction(new StubOutput()),
                 new ExitAction(out)));
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findAll().get(0).getName(), is("Fix PC"));
+        List<Item> items = new ArrayList<>();
+        tracker.findAll(items::add);
+        assertThat(items.get(0).getName(), is("Fix PC"));
     }
 
     @Test

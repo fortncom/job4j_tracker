@@ -12,7 +12,7 @@ public interface Store extends AutoCloseable {
 
     boolean delete(int id);
 
-    List<Item> findAll();
+    void findAll(Observe<Item> observe);
 
     List<Item> findByName(String key);
 
